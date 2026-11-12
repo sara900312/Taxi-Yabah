@@ -1,0 +1,10 @@
+{
+  "name": "YABAH | يابه",
+  "description": "مشوارك علينا · Your Journey, Made Easy — Arabic-first passenger ride-hailing application for Baghdad with interactive map, offline GeoNames place search, fare quotes, and live trip tracking.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
