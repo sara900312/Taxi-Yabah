@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "taxi-map-config / public_map_token",
+  "x-function": "taxi-map-config",
+  "x-version": 1,
+  "request": {
+    "type": "object",
+    "required": [
+      "action"
+    ],
+    "properties": {
+      "action": {
+        "const": "public_map_token"
+      }
+    }
+  },
+  "response": {
+    "type": "object",
+    "required": [
+      "ok",
+      "token"
+    ],
+    "properties": {
+      "ok": {
+        "const": true
+      },
+      "token": {
+        "type": "string",
+        "pattern": "^pk\\.[A-Za-z0-9_\\-]+\\.[A-Za-z0-9_\\-]+$",
+        "description": "PUBLIC token for map rendering only. Clients must refuse anything else."
+      }
+    }
+  },
+  "x-errors": [
+    "AUTH_REQUIRED",
+    "INVALID_SESSION",
+    "UNSUPPORTED_ACTION",
+    "MAPBOX_PUBLIC_TOKEN_UNAVAILABLE",
+    "MAP_BOOTSTRAP_UNAVAILABLE",
+    "AUTH_CONFIGURATION_MISSING"
+  ]
+}

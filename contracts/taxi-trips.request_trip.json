@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "taxi-trips / request_trip",
+  "x-function": "taxi-trips",
+  "x-version": 5,
+  "request": {
+    "type": "object",
+    "required": [
+      "action",
+      "fare_quote_id"
+    ],
+    "properties": {
+      "action": {
+        "enum": [
+          "request_trip",
+          "create_trip"
+        ]
+      },
+      "fare_quote_id": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+      },
+      "vehicle_class": {
+        "type": "string",
+        "pattern": "^[a-z_]{2,30}$",
+        "default": "taxi"
+      },
+      "payment_method": {
+        "enum": [
+          "cash",
+          "wallet"
+        ],
+        "default": "cash",
+        "description": "Clients currently offer cash only"
+      },
+      "passenger_count": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8,
+        "default": 1
+      },
+      "passenger_note": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 1000
+      },
+      "promo_code": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 30
+      }
+    }
+  },
+  "response": {
+    "type": "object",
+    "required": [
+      "ok",
+      "trip"
+    ],
+    "properties": {
+      "ok": {
+        "const": true
+      },
+      "trip": {
+        "$ref": "#/$defs/trip"
+      }
+    }
+  },
+  "$defs": {
+    "trip": {
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "status": {
+          "enum": [
+            "requested",
+            "accepted",
+            "arrived",
+            "in_progress",
+            "completed",
+            "cancelled"
+          ]
+        },
+        "fare_quote_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "estimated_fare_iqd": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "final_fare_iqd": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "passenger_pays_iqd": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "payment_method": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "x-errors": [
+    "VALID_FARE_QUOTE_REQUIRED",
+    "INVALID_VEHICLE_CLASS",
+    "INVALID_PAYMENT_METHOD",
+    "INVALID_TRIP_DETAILS",
+    "FARE_QUOTE_EXPIRED",
+    "FARE_QUOTE_ALREADY_USED",
+    "FARE_QUOTE_NOT_FOUND",
+    "PRICE_CHANGED",
+    "DYNAMIC_PRICING_DISABLED",
+    "OUTSIDE_SERVICE_AREA",
+    "CROSS_CITY_NOT_SUPPORTED",
+    "VEHICLE_CLASS_NOT_IN_QUOTE",
+    "VEHICLE_CLASS_NOT_AVAILABLE",
+    "PAYMENT_METHOD_DISABLED",
+    "PROMOS_DISABLED",
+    "INVALID_PASSENGER_COUNT",
+    "INVALID_PASSENGER_NOTE",
+    "ACCOUNT_NOT_ACTIVE",
+    "PASSENGER_HAS_ACTIVE_TRIP",
+    "AUTH_REQUIRED"
+  ],
+  "x-notes": [
+    "NOT idempotent (no idempotency key). A timeout is NOT a failure: call active_trip before allowing another attempt. Never auto-retry.",
+    "Quotes are single-use (FARE_QUOTE_ALREADY_USED)."
+  ]
+}

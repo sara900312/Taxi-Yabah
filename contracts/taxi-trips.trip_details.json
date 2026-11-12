@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "taxi-trips / trip_details and active_trip",
+  "x-function": "taxi-trips",
+  "x-version": 5,
+  "request": {
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "action",
+          "trip_id"
+        ],
+        "properties": {
+          "action": {
+            "const": "trip_details"
+          },
+          "trip_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          }
+        }
+      },
+      {
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "const": "active_trip"
+          }
+        }
+      }
+    ]
+  },
+  "response": {
+    "type": "object",
+    "required": [
+      "ok",
+      "details"
+    ],
+    "properties": {
+      "ok": {
+        "const": true
+      },
+      "details": {
+        "oneOf": [
+          {
+            "type": "null",
+            "description": "active_trip only: no active trip"
+          },
+          {
+            "type": "object",
+            "required": [
+              "trip",
+              "events",
+              "my_rating_submitted"
+            ],
+            "properties": {
+              "trip": {
+                "type": "object",
+                "description": "public.trips row without pricing_snapshot"
+              },
+              "vehicle_class": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name_ar": {
+                    "type": "string"
+                  }
+                }
+              },
+              "passenger": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                  },
+                  "full_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "rating_avg": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "phone_e164": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Only while accepted/arrived/in_progress"
+                  }
+                }
+              },
+              "captain": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                  },
+                  "full_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "avatar_path": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "rating_avg": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "rating_count": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "phone_e164": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Only while accepted/arrived/in_progress"
+                  }
+                }
+              },
+              "vehicle": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "make": {},
+                  "model": {},
+                  "color": {},
+                  "plate_number": {},
+                  "vehicle_type": {},
+                  "manufacture_year": {}
+                }
+              },
+              "captain_location": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "Only while accepted/arrived/in_progress",
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "updated_at": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date-time"
+                  }
+                }
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "note": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              },
+              "my_rating_submitted": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "x-errors": [
+    "VALID_TRIP_ID_REQUIRED",
+    "TRIP_NOT_FOUND",
+    "AUTH_REQUIRED",
+    "INVALID_SESSION"
+  ]
+}

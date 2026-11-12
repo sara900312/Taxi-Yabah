@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "taxi-trips / transition_trip and rate_trip",
+  "x-function": "taxi-trips",
+  "x-version": 5,
+  "transition_trip": {
+    "request": {
+      "type": "object",
+      "required": [
+        "action",
+        "trip_id",
+        "trip_action"
+      ],
+      "properties": {
+        "action": {
+          "const": "transition_trip"
+        },
+        "trip_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "trip_action": {
+          "enum": [
+            "accept",
+            "arrive",
+            "start",
+            "complete",
+            "cancel"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "final_fare_iqd": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "rules": [
+      "accept: captain, trip requested and unassigned",
+      "arrive/start/complete: assigned captain, from accepted/arrived/in_progress respectively",
+      "cancel: passenger or captain, only from requested/accepted/arrived"
+    ],
+    "x-errors": [
+      "INVALID_TRIP_ACTION",
+      "INVALID_FINAL_FARE",
+      "TRIP_NOT_FOUND",
+      "NOT_TRIP_PARTICIPANT",
+      "TRIP_NOT_AVAILABLE",
+      "INVALID_TRIP_TRANSITION",
+      "TRIP_CANNOT_BE_CANCELLED",
+      "CAPTAIN_HAS_ACTIVE_TRIP",
+      "CAPTAIN_SUBSCRIPTION_OR_APPROVAL_INVALID",
+      "LOCKED_FARE_MISSING",
+      "FINAL_FARE_REQUIRED",
+      "UNSUPPORTED_TRIP_ACTION"
+    ]
+  },
+  "rate_trip": {
+    "request": {
+      "type": "object",
+      "required": [
+        "action",
+        "trip_id",
+        "stars"
+      ],
+      "properties": {
+        "action": {
+          "const": "rate_trip"
+        },
+        "trip_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "stars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "comment": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 40
+          }
+        }
+      }
+    },
+    "x-errors": [
+      "INVALID_RATING",
+      "TRIP_NOT_COMPLETED",
+      "RATING_WINDOW_CLOSED",
+      "ALREADY_RATED",
+      "NOT_TRIP_PARTICIPANT",
+      "TRIP_NOT_FOUND"
+    ]
+  }
+}

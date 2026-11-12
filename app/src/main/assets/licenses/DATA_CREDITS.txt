@@ -1,0 +1,9 @@
+Governorate outlines: Iraq Central Statistics Office, adapted by OCHA Iraq. Iraq COD-AB v01, 2019.
+https://data.humdata.org/dataset/cod-ab-irq
+CC BY 3.0 IGO: https://creativecommons.org/licenses/by/3.0/igo/
+Outlines simplified and rounded for display.
+
+Place names and coordinates: GeoNames, Iraq export, 9 November 2026.
+https://www.geonames.org/ and https://download.geonames.org/export/dump/IQ.zip
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Selected populated places, facilities, roads and administrative places near service areas.

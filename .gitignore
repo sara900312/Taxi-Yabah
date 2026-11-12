@@ -1,0 +1,14 @@
+.gradle/
+build/
+/local.properties
+.idea/
+*.iml
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+*.keystore
+*.jks
+# never commit credentials
+secrets.properties
+google-services.json

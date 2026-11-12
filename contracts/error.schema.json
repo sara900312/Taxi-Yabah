@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Edge function error envelope",
+  "type": "object",
+  "required": [
+    "ok",
+    "error"
+  ],
+  "properties": {
+    "ok": {
+      "const": false
+    },
+    "error": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]+$",
+      "description": "Machine code. Clients map it to a human message; never display `message`."
+    },
+    "message": {
+      "type": "string",
+      "description": "Raw server text (taxi-trips only). Diagnostic; NOT for display."
+    }
+  }
+}

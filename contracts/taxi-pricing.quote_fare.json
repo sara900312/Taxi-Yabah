@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "taxi-pricing / quote_fare (standard taxi offer)",
+  "x-function": "taxi-pricing",
+  "x-version": 6,
+  "request": {
+    "type": "object",
+    "required": [
+      "action",
+      "pickup_address",
+      "dropoff_address",
+      "pickup_latitude",
+      "pickup_longitude",
+      "dropoff_latitude",
+      "dropoff_longitude"
+    ],
+    "properties": {
+      "action": {
+        "const": "quote_fare"
+      },
+      "offer": {
+        "const": "standard_taxi",
+        "description": "Opt-in single-fare contract; requires city_id"
+      },
+      "city_id": {
+        "type": "integer"
+      },
+      "pickup_address": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 500
+      },
+      "dropoff_address": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 500
+      },
+      "pickup_latitude": {
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90
+      },
+      "pickup_longitude": {
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180
+      },
+      "dropoff_latitude": {
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90
+      },
+      "dropoff_longitude": {
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180
+      }
+    }
+  },
+  "response": {
+    "type": "object",
+    "required": [
+      "ok",
+      "quote"
+    ],
+    "properties": {
+      "ok": {
+        "const": true
+      },
+      "quote": {
+        "type": "object",
+        "required": [
+          "id",
+          "estimated_fare_iqd",
+          "currency",
+          "expires_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "estimated_fare_iqd": {
+            "type": "integer"
+          },
+          "currency": {
+            "const": "IQD"
+          },
+          "distance_m": {
+            "type": "integer"
+          },
+          "duration_s": {
+            "type": "integer"
+          },
+          "static_duration_s": {
+            "type": "integer"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Server clock. Convert with the HTTP Date header."
+          },
+          "city_id": {
+            "type": "integer"
+          },
+          "traffic_available": {
+            "type": "boolean"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "vehicle_class": {
+                  "type": "string"
+                },
+                "vehicle_class_id": {
+                  "type": "integer"
+                },
+                "name_ar": {
+                  "type": "string"
+                },
+                "max_passengers": {
+                  "type": "integer"
+                },
+                "final_fare_iqd": {
+                  "type": "integer",
+                  "description": "Amount request_trip charges for this class"
+                },
+                "available_captains": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "surge_multiplier": {
+            "type": "number"
+          },
+          "pricing_snapshot": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "x-errors": [
+    "AUTH_REQUIRED",
+    "INVALID_SESSION",
+    "ACCOUNT_NOT_ACTIVE",
+    "PASSENGER_ROLE_REQUIRED",
+    "UNSUPPORTED_ACTION",
+    "INVALID_ROUTE_DETAILS",
+    "DYNAMIC_PRICING_NOT_CONFIGURED",
+    "OUTSIDE_SERVICE_AREA",
+    "DROPOFF_OUTSIDE_SERVICE_AREA",
+    "VEHICLE_CLASS_NOT_AVAILABLE",
+    "MAPBOX_ACCESS_TOKEN_NOT_CONFIGURED",
+    "MAPBOX_BUDGET_CHECK_UNAVAILABLE",
+    "QUOTE_RATE_LIMITED",
+    "MAPBOX_DAILY_LIMIT_REACHED",
+    "MAPBOX_RATE_LIMITED",
+    "MAPBOX_ROUTE_UNAVAILABLE",
+    "MAPBOX_ROUTE_FAILED",
+    "MAPBOX_NO_ROUTE"
+  ],
+  "x-notes": [
+    "Side effect: inserts a trip_fare_quotes row. Quote only on an explicit user action.",
+    "Live TTL on 12 Nov 2026: 180 s (taxi_pricing_settings.quote_ttl_seconds)."
+  ]
+}
